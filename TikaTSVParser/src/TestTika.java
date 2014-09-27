@@ -24,16 +24,11 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.apache.tika.sax.XHTMLContentHandler;
 import org.apache.tika.mime.MediaType;
 
-public class TestTika {
-	  public static void main(String[] args) throws FileNotFoundException, IOException, SAXException, TikaException, TransformerConfigurationException{
-		  TestTika t = new TestTika();
-	  }
-	  
-	  public TestTika() throws FileNotFoundException, IOException, org.xml.sax.SAXException, TikaException, TransformerConfigurationException {	
-		    //File file = new File("..\\data\\computrabajo-ar-20121106.tsv");
-		  	File file = new File("C:\\Users\\chen\\Desktop\\xx.tsv");
+public class TestTika {	  	  
+	  public TestTika(String inputF, String outputF) throws FileNotFoundException, IOException, org.xml.sax.SAXException, TikaException, TransformerConfigurationException {			 
+		  	File file = new File(inputF);
 		    InputStream is = new FileInputStream(file);
-		    OutputStream output = new FileOutputStream(new File("C:\\Users\\chen\\Desktop\\xx.html"));
+		    OutputStream output = new FileOutputStream(new File(outputF));
 		    Metadata metadata = new Metadata();		    
 		    //ContentHandler ch = new BodyContentHandler(output);
 		    ContentHandler ch = new BodyContentHandler();
@@ -41,18 +36,19 @@ public class TestTika {
 		    
 		    
 		    StringWriter sw = new StringWriter();
-		    SAXTransformerFactory factory = (SAXTransformerFactory)
-		             SAXTransformerFactory.newInstance();
+		    SAXTransformerFactory factory = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
 		    TransformerHandler handler = factory.newTransformerHandler();
 		    handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
 		    handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "no");
 		    handler.setResult(new StreamResult(output));
+		    
+		    
 		    try {
 		    	parser.parse(is, handler, metadata, new ParseContext());
 		    } finally {
 		    	is.close();
 		    }
-		    System.out.println(sw.toString());
+		    //System.out.println(sw.toString());
 	  }	  
 	  
 	  public class TSVParser extends AbstractParser {
