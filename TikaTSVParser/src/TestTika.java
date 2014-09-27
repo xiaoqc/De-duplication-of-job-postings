@@ -3,6 +3,12 @@ import org.json.*;
 import java.io.*;
 import java.util.*;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.tika.Tika; 
 import org.apache.tika.exception.TikaException; 
 import org.apache.tika.metadata.Metadata; 
@@ -19,50 +25,35 @@ import org.apache.tika.sax.XHTMLContentHandler;
 import org.apache.tika.mime.MediaType;
 
 public class TestTika {
-	  public static void main(String[] args) throws FileNotFoundException, IOException, SAXException, TikaException{
+	  public static void main(String[] args) throws FileNotFoundException, IOException, SAXException, TikaException, TransformerConfigurationException{
 		  TestTika t = new TestTika();
 	  }
 	  
-	  public TestTika() throws FileNotFoundException, IOException, org.xml.sax.SAXException, TikaException {	
-		    File file = new File("computrabajo-ar-20121106.tsv");
-		    //InputStream is = new FileInputStream(new File("C:\\Users\\chen\\Desktop\\xx.tsv"));
+	  public TestTika() throws FileNotFoundException, IOException, org.xml.sax.SAXException, TikaException, TransformerConfigurationException {	
+		    //File file = new File("..\\data\\computrabajo-ar-20121106.tsv");
+		  	File file = new File("C:\\Users\\chen\\Desktop\\xx.tsv");
 		    InputStream is = new FileInputStream(file);
-		    //OutputStream output = new FileOutputStream(new File("out.xhtml"));
+		    OutputStream output = new FileOutputStream(new File("C:\\Users\\chen\\Desktop\\xx.html"));
 		    Metadata metadata = new Metadata();		    
 		    //ContentHandler ch = new BodyContentHandler(output);
 		    ContentHandler ch = new BodyContentHandler();
 		    Parser parser = new TSVParser();		
+		    
+		    
+		    StringWriter sw = new StringWriter();
+		    SAXTransformerFactory factory = (SAXTransformerFactory)
+		             SAXTransformerFactory.newInstance();
+		    TransformerHandler handler = factory.newTransformerHandler();
+		    handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
+		    handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "no");
+		    handler.setResult(new StreamResult(output));
 		    try {
-		    	parser.parse(is, ch, metadata, new ParseContext());
+		    	parser.parse(is, handler, metadata, new ParseContext());
 		    } finally {
 		    	is.close();
 		    }
-	  }
-	  
-	  /*public void buildXHTML(XHTMLContentHandler X, String buf) throws FileNotFoundException, IOException, org.xml.sax.SAXException, TikaException {
-		  	StringBuilder sb = new StringBuilder();
-		    X.startDocument();
-		    X.startElement("table");
-		    X.startElement("tr");
-		    for (int i = 0; i < buf.length(); i++){
-		    	char c = buf.charAt(i);
-		    	if (c == '\t'){
-		    		X.element("td", sb.toString());
-		    		sb.delete(0, sb.length());
-		    	} else if (c == '\n'){
-		    		X.element("td", sb.toString());
-		    		sb.delete(0, sb.length());
-		    		X.startElement("tr");
-		    		X.endElement("tr");
-		    	} else {
-		    		sb.append(c);
-		    	}
-		    }
-		    X.endElement("tr");
-		    X.endElement("table");
-		    X.endDocument();
-		    System.out.println(X.toString());
-	  }*/
+		    System.out.println(sw.toString());
+	  }	  
 	  
 	  public class TSVParser extends AbstractParser {
 	        private Set<MediaType> SUPPORTED_TYPES = Collections.singleton(MediaType.application("tsv"));
@@ -73,12 +64,16 @@ public class TestTika {
 	        }
 
 	        public void parse(InputStream stream, ContentHandler handler, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException {
-	                metadata.set(Metadata.CONTENT_TYPE, "application/xhtml+xml");
+	                metadata.set(Metadata.CONTENT_TYPE, "application/xhtml+xml; charset=UTF-8");
 	                XHTMLContentHandler X = new XHTMLContentHandler(handler, metadata);
+	                String[] s = {"postedDate","location","department","title","salary","start","duration","jobtype","applications","company","contactPerson","phoneNumber","faxNumber","emptyColumn","location","latitude","longitude","firstSeenData","url","lastSeenData"};
 	                X.startDocument();
-	                X.startElement("table");	                
+	                X.startElement("table", "border", "1px");	             
+	                for (int i = 0; i < s.length; i++){
+	                	X.element("td", s[i]);
+	                }
 	                
-	                BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+	                BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"));
 	                String line;
 					while ((line = reader.readLine()) != null){
 						X.startElement("tr");
@@ -86,19 +81,29 @@ public class TestTika {
 						for (int i = 0; i < line.length(); i++){
 							char c = line.charAt(i);
 							if (c == '\t'){
-		    		    		X.element("td", sb.toString());
+								String tmp = sb.toString();
+								if (tmp.equals("")){
+									tmp = " ";
+								}
+		    		    		X.element("td", tmp);
 		    		    		sb.delete(0, sb.length());
 		    		    	} else {
 		    		    		sb.append(c);
 		    		    	}
 						}
+						String tmp = sb.toString();
+						if (tmp.equals("")){
+							tmp = " ";
+						}
+    		    		X.element("td", tmp);
 						X.endElement("tr");
 					}
 	                
 					X.endElement("table");
-	                X.endDocument();	    		  
+	                X.endDocument();	
 	        }
 	  }
+	  
 	  public class jsonTableContentHandler extends ContentHandlerDecorator{
 		  
 	  }
