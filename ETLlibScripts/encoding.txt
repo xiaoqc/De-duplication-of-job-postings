@@ -1,0 +1,3 @@
+utf-8
+us-ascii
+iso-8859-1
