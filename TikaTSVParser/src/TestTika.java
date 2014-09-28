@@ -19,6 +19,7 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.sax.BodyContentHandler; 
 import org.xml.sax.ContentHandler; 
 
+//TestTika read tsv file and output json files, one json file per job entry
 public class TestTika {	  	  
 	public TestTika(String inputF, String outputF, String jobEntryDirectory) throws FileNotFoundException, IOException, org.xml.sax.SAXException, TikaException, TransformerConfigurationException {			 
 		File file = new File(inputF);

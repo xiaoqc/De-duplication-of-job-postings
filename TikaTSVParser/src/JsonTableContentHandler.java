@@ -15,6 +15,7 @@ import org.apache.tika.sax.ContentHandlerDecorator;
 import org.apache.tika.sax.XHTMLContentHandler;
 import org.xml.sax.*;
 
+//JsonTableContentHandler transforms XHTML to json files, one file per job entry
 public class JsonTableContentHandler extends ContentHandlerDecorator {
 	private int jobEntryIndex = 0;
 	private String routePrefix;

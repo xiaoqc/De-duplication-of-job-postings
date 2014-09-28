@@ -14,6 +14,8 @@ import org.apache.tika.sax.XHTMLContentHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
+//TSVParser transfroms tsv file to XHTML file
+//for each entry, it represents as a row in the table
 public class TSVParser extends AbstractParser {
         private Set<MediaType> SUPPORTED_TYPES = Collections.singleton(MediaType.application("tsv"));
         public static final String TSV_MIME_TYPE = "application/tsv";        
