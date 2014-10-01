@@ -1,6 +1,7 @@
 import org.json.*;
 
 import java.io.*;
+import java.math.BigInteger;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -20,12 +21,23 @@ public class JsonTableContentHandler extends ContentHandlerDecorator {
 	private int jobEntryIndex = 0;
 	private String routePrefix;
 	private JSONObject json;
-	private String[] s = {"postedDate","location","department","title","salary","start","duration","jobtype","applications","company","contactPerson","phoneNumber","faxNumber","index","location","latitude","longitude","firstSeenData","url","lastSeenData"};
+	private String[] s;
+	private int[] w;
+	private String[] chosenField;
 	private int columnNameIndex;
+	private PrintWriter simHashWriter;
 	private boolean writeValue = false;
-	public JsonTableContentHandler(String prefix){
+	private SimHash sh;
+	
+	public JsonTableContentHandler(String prefix, PrintWriter writer, String[] header, int[] weight, String[] chosen){
+		s = header;
+		w = weight;
+		chosenField = chosen;
+		simHashWriter = writer;
 		routePrefix = new String(prefix);
+		sh = new SimHash(w);
 	}
+	
 	//@override
 	public void startElement(String uri, String localName, String name, Attributes atts) throws SAXException{
 		if (name.equals("tr")){			
@@ -36,6 +48,7 @@ public class JsonTableContentHandler extends ContentHandlerDecorator {
 		}
 		super.startElement(uri, localName, name, atts);
 	}
+	
 	//@override
 	public void characters(char[] ch, int start, int length) throws SAXException{
 		if (writeValue){
@@ -55,6 +68,7 @@ public class JsonTableContentHandler extends ContentHandlerDecorator {
 		}
 		super.characters(ch, start, length);
 	}
+
 	//@override
 	public void endElement(String uri, String localName, String name) throws SAXException{
 		if (name.equals("tr")){
@@ -64,6 +78,7 @@ public class JsonTableContentHandler extends ContentHandlerDecorator {
 				PrintWriter writer = new PrintWriter(route, "UTF-8");
 				writer.println(json.toString());
 				writer.close();
+				//generateSimHash();
 			}
 			catch (Exception e){
 				e.printStackTrace();
@@ -72,5 +87,22 @@ public class JsonTableContentHandler extends ContentHandlerDecorator {
 			writeValue = false;
 		}
 		super.endElement(uri, localName, name);
+	}
+	
+	public void generateSimHash(){
+		String wall = "!@#";
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < chosenField.length; i++){
+			if (sb.length() > 0){
+				sb.append(wall);
+			}
+			try {
+				sb.append(json.get(chosenField[i]).toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}		
+		BigInteger fingerPrint = sh.getFingerPrint(sb.toString());
+		simHashWriter.println("" + fingerPrint);
 	}
 }

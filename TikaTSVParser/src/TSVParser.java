@@ -26,7 +26,6 @@ public class TSVParser extends AbstractParser {
         public void parse(InputStream stream, ContentHandler handler, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException {
             metadata.set(Metadata.CONTENT_TYPE, "application/xhtml+xml; charset=UTF-8");
             XHTMLContentHandler X = new XHTMLContentHandler(handler, metadata);
-            String[] s = {"postedDate","location","department","title","salary","start","duration","jobtype","applications","company","contactPerson","phoneNumber","faxNumber","emptyColumn","location","latitude","longitude","firstSeenData","url","lastSeenData"};
             X.startDocument();
             //X.element("title", "xx");
             X.startElement("table", "border", "1px");
