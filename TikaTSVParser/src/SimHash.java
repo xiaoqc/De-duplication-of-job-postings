@@ -1,47 +1,50 @@
 import java.math.BigInteger;
+import java.util.*;
 import java.util.StringTokenizer;
 
 public class SimHash {
 	private int hashbits = 64;
-	private int[] weight;
+	private List<Integer> weight;
 
-	public SimHash(int[] w) {
-		weight = w;
+	public SimHash(List<Integer> w) {
+		weight = new ArrayList<Integer>(w);
 	}
 	
-	public SimHash(int hashbits, int[] w) {
-		weight = w;
+	public SimHash() {
+	}
+	
+	/*public SimHash(String tokens, int hashbits) {
+		this.tokens = tokens;
 		this.hashbits = hashbits;
-	}
-	
-	public BigInteger getFingerPrint(String str){
-		return simHash(str);
-	}
+	}*/
 
-	public BigInteger simHash(String str) {
+	public BigInteger getFingerPrint(String str) {
 		int[] v = new int[this.hashbits];
-		String[] s = str.split("!@#");
-		for (int i = 0; i < s.length; i++){
-			String temp = s[i];
-			int weightTemp = weight[i];
+		
+		String spliter = "$%^";
+		String[] sArray = str.split("$%^");
+		for (int i = 0; i < sArray.length; i++){
+			String temp = sArray[i];
+			int tempWeight = weight.get(i);
 			BigInteger t = this.hash(temp);
-			//System.out.println("temp = " + temp+" £º " + t);
-			for (int j = 0; j < hashbits; j++) {
+			System.out.println("temp = " + temp+" £º " + t);
+			for (int j = 0; j < this.hashbits; j++) {
 				BigInteger bitmask = new BigInteger("1").shiftLeft(j);
 				if (t.and(bitmask).signum() != 0) {
-					v[j] += weightTemp;
+					v[j] += tempWeight;
+					//v[j] += 1;
 				} else {
-					v[j] -= weightTemp;
+					v[j] -= tempWeight;
+					//v[j] -= 1;
 				}
 			}
 		}
 		BigInteger fingerprint = new BigInteger("0");
-		for (int i = 0; i < hashbits; i++) {
+		for (int i = 0; i < this.hashbits; i++) {
 			if (v[i] >= 0) {
 				fingerprint = fingerprint.add(new BigInteger("1").shiftLeft(i));
 			}
 		}
-		System.out.println(fingerprint);
 		return fingerprint;
 	}
 
@@ -77,26 +80,4 @@ public class SimHash {
 		}
 		return tot;
 	}
-	/*
-	public static void main(String[] args) {
-		String s = "China people's Republic of China Chinese China people's Republic of China People's Republic of China";
-		SimHash hash1 = new SimHash(s, 128);
-		System.out.println(hash1.strSimHash + "  "
-				+ hash1.strSimHash.bitLength());
-
-		s = "China people's Republic of China Chinese China people's Republic of China";
-		SimHash hash2 = new SimHash(s, 128);
-		System.out.println(hash2.strSimHash + "  "
-				+ hash2.strSimHash.bitCount());
-
-		s = "China people's Republic";
-		SimHash hash3 = new SimHash(s, 128);
-		System.out.println(hash3.strSimHash + "  "
-				+ hash3.strSimHash.bitCount());
-
-		System.out.println("============================");
-		System.out.println(hash1.hammingDistance(hash2));
-		System.out.println(hash1.hammingDistance(hash3));
-	}
-	*/
 }

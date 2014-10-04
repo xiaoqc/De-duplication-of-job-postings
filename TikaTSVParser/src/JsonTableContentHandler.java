@@ -22,20 +22,12 @@ public class JsonTableContentHandler extends ContentHandlerDecorator {
 	private String routePrefix;
 	private JSONObject json;
 	private String[] s;
-	private int[] w;
-	private String[] chosenField;
 	private int columnNameIndex;
-	private PrintWriter simHashWriter;
 	private boolean writeValue = false;
-	private SimHash sh;
 	
-	public JsonTableContentHandler(String prefix, PrintWriter writer, String[] header, int[] weight, String[] chosen){
+	public JsonTableContentHandler(String prefix, String[] header){
 		s = header;
-		w = weight;
-		chosenField = chosen;
-		simHashWriter = writer;
 		routePrefix = new String(prefix);
-		sh = new SimHash(w);
 	}
 	
 	//@override
@@ -87,22 +79,5 @@ public class JsonTableContentHandler extends ContentHandlerDecorator {
 			writeValue = false;
 		}
 		super.endElement(uri, localName, name);
-	}
-	
-	public void generateSimHash(){
-		String wall = "!@#";
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < chosenField.length; i++){
-			if (sb.length() > 0){
-				sb.append(wall);
-			}
-			try {
-				sb.append(json.get(chosenField[i]).toString());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}		
-		BigInteger fingerPrint = sh.getFingerPrint(sb.toString());
-		simHashWriter.println("" + fingerPrint);
 	}
 }

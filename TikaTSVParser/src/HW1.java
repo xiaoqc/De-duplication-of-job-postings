@@ -8,8 +8,8 @@ import org.apache.tika.exception.TikaException;
 import org.xml.sax.SAXException;
 
 public class HW1 {
-	//String fileD = "C:\\Users\\chen\\Dropbox\\TSV\\TSV\\";
-	private String fileD = "C:\\Users\\chen\\Desktop\\New folder\\";
+	private String fileD = "C:\\Users\\chen\\Dropbox\\TSV\\TSV\\";
+	//private String fileD = "C:\\Users\\chen\\Desktop\\New folder\\";
 	private String bufFileRoute = "C:\\Users\\chen\\Desktop\\教材们\\2014 fall\\572\\assignment1\\fileNameBuf.txt";
 	private String bufXHTML = "C:\\Users\\chen\\Desktop\\教材们\\2014 fall\\572\\assignment1\\bufXHTML.html";
 	private String jobEntryFile = "C:\\Users\\chen\\Desktop\\教材们\\2014 fall\\572\\assignment1\\jobEntry\\";
@@ -38,6 +38,6 @@ public class HW1 {
 	
 	//(route prefix, tsv file name, buffer XHTML output, job entry), TestTika transforms all tsv files to json job entries.		
 	public void TSVToJSON() throws FileNotFoundException, TransformerConfigurationException, IOException, SAXException, TikaException, ParserConfigurationException{
-		TestTika t = new TestTika(fileD, bufFileRoute, bufXHTML, jobEntryFile, simHashFile, header, weight, chosenField);
+		TestTika t = new TestTika(fileD, bufFileRoute, bufXHTML, jobEntryFile, header);
 	}	
 }

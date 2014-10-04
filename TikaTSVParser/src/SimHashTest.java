@@ -1,6 +1,4 @@
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.StringTokenizer;
 
 public class SimHashTest {
@@ -80,22 +78,34 @@ public class SimHashTest {
 
 	public static void main(String[] args) {
 		String s = "China people's Republic of China Chinese China people's Republic of China People's Republic of China";
-		SimHashTest hash1 = new SimHashTest(s, 64);
+		SimHashTest hash1 = new SimHashTest(s, 128);
 		System.out.println(hash1.strSimHash + "  "
 				+ hash1.strSimHash.bitLength());
 
 		s = "China people's Republic of China Chinese China people's Republic of China";
-		SimHashTest hash2 = new SimHashTest(s, 64);
+		SimHashTest hash2 = new SimHashTest(s, 128);
 		System.out.println(hash2.strSimHash + "  "
 				+ hash2.strSimHash.bitCount());
 
 		s = "China people's Republic";
-		SimHashTest hash3 = new SimHashTest(s, 64);
+		SimHashTest hash3 = new SimHashTest(s, 128);
 		System.out.println(hash3.strSimHash + "  "
 				+ hash3.strSimHash.bitCount());
 
 		System.out.println("============================");
 		System.out.println(hash1.hammingDistance(hash2));
 		System.out.println(hash1.hammingDistance(hash3));
+		
+		System.out.println("============================");
+		System.out.println("============================");
+		System.out.println("============================");
+		String s4 = "2012-10-23	Capital Federal	Capital Federal	Desarrollador plataforma SalesForce CRM.!!!A convenir	Inmediato	Indeterminada	Tiempo Completo	Enviar Cv con Ref Desarrollador SalesForce CRM	Softtek	Belen Lavinia!!!	Buenos Aires, Argentina	-34.6037232	-58.3815931	2012-10-29	http://www.computrabajo.com.ar/bt-ofrd-softtek-21444.htm	2012-11-06";
+		String s5 = "2012-10-24	Capital Federal	Capital Federal	Desarrollador plataforma SalesForce CRM.!!!A convenir	Inmediato	Indeterminada	Tiempo Completo	Enviar Cv con Ref Desarrollador SalesForce CRM	Softtek	Belen Lavinia!!!	Buenos Aires, Argentina	-34.6037232	-58.3815931	2012-10-29	http://www.computrabajo.com.ar/bt-ofrd-softtek-21444.htm	2012-11-06";
+		SimHashTest hashs4 = new SimHashTest(s, 64);
+		SimHashTest hashs5 = new SimHashTest(s, 64);
+		System.out.println(hashs4.strSimHash + "  "+ hashs4.strSimHash.bitCount());
+		System.out.println(hashs5.strSimHash + "  "+ hashs5.strSimHash.bitCount());
+		System.out.println("============================");
+		System.out.println(hashs4.hammingDistance(hashs5));
 	}
 }

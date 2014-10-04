@@ -27,14 +27,13 @@ import org.xml.sax.ContentHandler;
 
 //TestTika read tsv file and output json files, one json file per job entry
 public class TestTika {	  
-	public TestTika(String prefix, String tsvFile, String outputF, String jobEntryDirectory, String simHashFile, String[] s, int[] w, String[] c) throws FileNotFoundException, IOException, org.xml.sax.SAXException, TikaException, TransformerConfigurationException, ParserConfigurationException {			 
+	public TestTika(String prefix, String tsvFile, String outputF, String jobEntryDirectory, String[] s) throws FileNotFoundException, IOException, org.xml.sax.SAXException, TikaException, TransformerConfigurationException, ParserConfigurationException {			 
 		List<String> route = getRoute(prefix, tsvFile);
 		//System.out.println(route);
-		PrintWriter writer = new PrintWriter(simHashFile, "utf-8");
 		
-	    OutputStream output = new FileOutputStream(new File(outputF));
+	    
 	    Metadata metadata = new Metadata();		    
-	    ContentHandler ch = new BodyContentHandler(output);
+	    //ContentHandler ch = new BodyContentHandler(output);
 	    Parser parser = new TSVParser();	
 	    
 	    
@@ -43,25 +42,35 @@ public class TestTika {
 	    TransformerHandler handler = factory.newTransformerHandler();
 	    handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
 	    handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "no");
-	    handler.setResult(new StreamResult(output));
+	    
 	    //System.out.println(sw.toString());
 	    
-	    JsonTableContentHandler jsonch = new JsonTableContentHandler(jobEntryDirectory, writer, s, w, c);
+	    JsonTableContentHandler jsonch = new JsonTableContentHandler(jobEntryDirectory, s);
 		SAXParserFactory saxF = SAXParserFactory.newInstance();
 		SAXParser saxP = saxF.newSAXParser();
 	    
+
+    	FileWriter clearWriter = new FileWriter(outputF);
+    	BufferedWriter clearBufferedWriter = new BufferedWriter(clearWriter);
 	    try{
 		    for (int i = 0; i < route.size(); i++){
+		    	clearBufferedWriter.write("");
+		    	OutputStream output = new FileOutputStream(new File(outputF));
+		    	handler.setResult(new StreamResult(output));
+		    	
+		    	
 		    	String inputF = route.get(i);
 		    	File file = new File(inputF);
 			    InputStream is = new FileInputStream(file);
 			    parser.parse(is, handler, metadata, new ParseContext());
 			    is.close();
 			    saxP.parse(new File(outputF), jsonch);
+			    System.out.println("job " + i + " is finished.");
+			    output.close();
 		    }
-	    } finally {
-	    	output.close();
-	    }	  
+	    } catch(Exception e){  
+	    	e.printStackTrace();
+	    }
 	}	
 	public List<String> getRoute(String prefix, String fileName) throws IOException{
 		List<String> rst = new ArrayList<String>();
