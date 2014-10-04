@@ -29,7 +29,7 @@ def unpack(inputDir, fileName):
 	data = json.load(f);
 	for i in data['jobsInfo']:
 		outputFile = outputDir + '/' + str(index) + '.json';
-		print 'Writing file : ' + outputFile;
+		#print 'Writing file : ' + outputFile;
 		f2 = open(outputFile, 'w');
 		f2.write(json.dumps(i));
 		f2.close();
@@ -39,4 +39,5 @@ for i in os.listdir(inputDir):
 	print str(i);
 	if '.json' in str(i):
 		unpack(inputDir, str(i));
+		print 'Done unpacking: ' + str(i);
 
