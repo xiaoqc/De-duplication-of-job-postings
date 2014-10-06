@@ -30,6 +30,10 @@ public class JsonTableContentHandler extends ContentHandlerDecorator {
 		routePrefix = new String(prefix);
 	}
 	
+	public int getNumberOfJobEntry(){
+		return this.jobEntryIndex;
+	}
+	
 	//@override
 	public void startElement(String uri, String localName, String name, Attributes atts) throws SAXException{
 		if (name.equals("tr")){			

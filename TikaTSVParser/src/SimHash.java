@@ -1,22 +1,28 @@
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.StringTokenizer;
-
+//generate finger print for json files
 public class SimHash {
 	private int hashbits = 64;
 	private List<Integer> weight;
+	private MessageDigest md;
+	private MurmurHash murmur;
 
 	public SimHash(List<Integer> w) {
+		murmur = new MurmurHash();
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 		weight = new ArrayList<Integer>(w);
 	}
 	
 	public SimHash() {
 	}
 	
-	/*public SimHash(String tokens, int hashbits) {
-		this.tokens = tokens;
-		this.hashbits = hashbits;
-	}*/
 
 	public BigInteger getFingerPrint(String str) {
 		int[] v = new int[this.hashbits];
@@ -26,8 +32,14 @@ public class SimHash {
 		for (int i = 0; i < sArray.length; i++){
 			String temp = sArray[i];
 			int tempWeight = weight.get(i);
-			BigInteger t = this.hash(temp);
-			System.out.println("temp = " + temp+" £º " + t);
+			
+			long val = murmur.hash64(temp);
+			BigInteger t = BigInteger.valueOf(val);
+			//BigInteger t = this.hash(temp);
+			//BigInteger t = MD5Hash(temp);
+			//System.out.println("temp = " + temp+" £º " + t);
+			
+			
 			for (int j = 0; j < this.hashbits; j++) {
 				BigInteger bitmask = new BigInteger("1").shiftLeft(j);
 				if (t.and(bitmask).signum() != 0) {
@@ -46,6 +58,18 @@ public class SimHash {
 			}
 		}
 		return fingerprint;
+	}
+	
+	public BigInteger MD5Hash(String source){
+		BigInteger rst = null;
+		try {
+			byte[] buf = source.getBytes("utf-8");			
+			byte[] digest = md.digest(buf);
+			rst = new BigInteger(digest);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		return rst;
 	}
 
 	private BigInteger hash(String source) {

@@ -3,7 +3,7 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
+//list the directory's file names
 public class FileLister {
 	private String directory_path;
 	private String filename;
@@ -47,6 +47,10 @@ public class FileLister {
 		for(File f : list){
 			System.out.println(f.getName());
 		}
+	}
+	
+	public int size(){
+		return list.length;
 	}
 	
 }
