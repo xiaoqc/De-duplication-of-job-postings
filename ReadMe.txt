@@ -22,6 +22,8 @@
 			The default is crawlFile(true);
 			the parameter is to enable the identify the near duplicates.
 
+	You can also use comand line to execute it with two parameters, one for fileD, onf for jobEntryFile.
+
 	External libraries    
 		Besides tika-app-1.6.jar,
 		org.json.jar is also needed.

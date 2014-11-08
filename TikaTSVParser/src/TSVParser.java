@@ -51,7 +51,7 @@ public class TSVParser extends AbstractParser {
             String line;
 			while ((line = reader.readLine()) != null){				
 				this.jobCounter++;
-				StringBuilder sb = new StringBuilder();				
+				/*StringBuilder sb = new StringBuilder();				
 				List<String> buf = new ArrayList<String>();				
 				for (int i = 0; i < line.length(); i++){
 					char c = line.charAt(i);
@@ -63,18 +63,25 @@ public class TSVParser extends AbstractParser {
 	    	    		sb.append(c);
 	    	    	}
 				}
-				buf.add(sb.toString());
-				if (buf.size() != 20){
+				buf.add(sb.toString());*/
+				String[] words = line.split("\t");				
+				if (words.length != 20){
 					System.out.println("wrong job entry");
 					continue;
 				}
-				if (this.removeSame && isSame(buf.get(buf.size() - 3), buf.get(buf.size() - 1), buf.get(buf.size() - 2))){
+				//words[14] = words[14].replace(',', ' ');
+				/*if (jobCounter - 1 == 193){
+					for (int i = 0; i < words.length; i++){
+						System.out.println(i + " " + words[i]);
+					}
+				}*/
+				if (this.removeSame && isSame(words[words.length - 3], words[words.length - 1], words[words.length - 2])){
 					continue;
 				}				
 				
 				X.startElement("tr");
-				for (int i = 0; i < buf.size(); i++){
-					String tmp = buf.get(i);
+				for (int i = 0; i < words.length; i++){
+					String tmp = words[i];
 					if (tmp.equals("")){
 						tmp = " ";
 					}
@@ -88,10 +95,9 @@ public class TSVParser extends AbstractParser {
         }
         
         //identify the exactly same file
-        public boolean isSame(String start, String end, String url){
-        	
+        public boolean isSame(String start, String end, String url){        	
         	StringBuilder sb = new StringBuilder();
-        	String[] startA = start.split("-");
+        	/*String[] startA = start.split("-");
         	for (int i = 0; i < startA.length; i++){        		
         		sb.append(startA[i]);
         	}
@@ -109,8 +115,8 @@ public class TSVParser extends AbstractParser {
         			this.map.put(url, true);
         			return false;
         		}
-        	}
-        	sb = new StringBuilder();
+        	}        	
+        	sb = new StringBuilder();*/
         	String[] endA = end.split("-");
         	for (int i = 0; i < endA.length; i++){
         		sb.append(endA[i]);
@@ -122,7 +128,13 @@ public class TSVParser extends AbstractParser {
         		System.out.println("wrong job entry");
         		return false;
         	}
-        	return startVal < endVal;
+        	if (map.containsKey(url)){
+        		return true;
+        	} else {
+        		this.map.put(url, true);
+    			return false;
+        	}
+        	//return startVal < endVal;
         }
         
         public int getNumberOfJobs(){

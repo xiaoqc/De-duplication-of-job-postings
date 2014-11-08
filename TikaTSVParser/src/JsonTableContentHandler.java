@@ -50,13 +50,20 @@ public class JsonTableContentHandler extends ContentHandlerDecorator {
 		if (writeValue){
 			String tmp = new String(ch, start, length);
 			try {
-				if (columnNameIndex == 20){
-					columnNameIndex = 0;
-				}
-				if (s[columnNameIndex].equals("index")){
+				this.columnNameIndex %= 20;
+				if (s[columnNameIndex].equals("id")){
 					tmp = "" + jobEntryIndex;
 				}
-				json.append(s[columnNameIndex], tmp);
+				if (s[columnNameIndex].equals("latitude") && !Character.isDigit(tmp.charAt(0))){					
+					//tmp = json.getString((s[--this.columnNameIndex])) + tmp;
+					//json.put(s[this.columnNameIndex], tmp);
+					--this.columnNameIndex;
+				} else {
+					json.put(s[columnNameIndex], tmp);
+				}
+				/*if (this.jobEntryIndex == 163){
+					System.out.println(columnNameIndex + " " + s[columnNameIndex] + " " + json.get(s[columnNameIndex]));
+				}*/
 				columnNameIndex++;
 			} catch (JSONException e) {
 				e.printStackTrace();

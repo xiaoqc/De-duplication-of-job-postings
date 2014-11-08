@@ -54,7 +54,8 @@ public class TestTika {
     	//FileWriter clearWriter = new FileWriter(outputF);
     	//BufferedWriter clearBufferedWriter = new BufferedWriter(clearWriter);
 	    try{
-		    for (int i = 0; i < route.size(); i++){
+		    //for (int i = 0; i < route.size(); i++){
+	    	for (int i = route.size() - 1; i >= 0; i--){
 		    	//clearBufferedWriter.write("");
 		    	OutputStream output = new FileOutputStream(new File(outputF));
 		    	handler.setResult(new StreamResult(outputF));
@@ -66,6 +67,7 @@ public class TestTika {
 			    parser.parse(is, handler, metadata, new ParseContext());
 			    is.close();
 			    saxP.parse(new File(outputF), jsonch);
+			    
 			    System.out.println("job " + i + " is finished.");
 			    output.close();
 		    }

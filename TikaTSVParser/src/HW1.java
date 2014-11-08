@@ -14,23 +14,27 @@ import org.xml.sax.SAXException;
 
 public class HW1 {
 	//----------------user needs to set below parameters--------------------------------------------------
-	private String fileD = "C:\\Users\\chen\\Desktop\\New folder\\";
-	private String jobEntryFile = "C:\\Users\\chen\\Desktop\\New folder2\\";
+	private String fileD = "C:\\Users\\chen\\Desktop\\教材们\\2014 fall\\572\\assignment1\\employment\\";;
+	private String jobEntryFile = "C:\\Users\\chen\\Desktop\\教材们\\2014 fall\\572\\assignment2\\json\\";
 	//----------------user needs to set above parameters--------------------------------------------------
 	private String uniqueFiles = "unique.txt";
 	private String bufFileRoute = "fileNameBuf.txt";
 	private String bufXHTML = "bufXHTML.html";
-	private String[] header = {"postedDate","department","location","title","index","salary","start","duration","jobtype","applications","company","contactPerson","phoneNumber","faxNumber","Area","latitude","longitude","firstSeenData","url","lastSeenData"};
+	private String[] header = {"postedDate","department","location","title","id","salary","start","duration","jobtype","applications","company","contactPerson","phoneNumber","faxNumber","Area","latitude","longitude","firstSeenData","url","lastSeenData"};
 	private int[] weight = {20, 15, 30, 5, 5, 5, 5, 15, 15, 15, 15, 5, 5};
 	private String[] chosenField = {"department","location","title","salary","start","duration","jobtype","applications","company","contactPerson","Area","latitude","longitude"};
 	private int numOfThread = 8;
 	private int numOfJobEntry;
 	
 	public static void main(String[] args){
-		HW1 hw1 = new HW1();
+		HW1 hw1 = new HW1(args);
 	}
 	//-------------------------use need to set parameter of TSVToJSON and crawFile---------------------------------
-	public HW1(){
+	public HW1(String[] args){
+		if (args.length == 2){
+			this.fileD = args[0];
+			this.jobEntryFile = args[1];
+		}
 		try{
 			//deleteFile();			
 			
@@ -43,24 +47,23 @@ public class HW1 {
 			//convert tsv to json jon entries. 
 			//The first parameter is to enable the de-duplication of same job postings
 			//The second parameter is the start date of input file, such as computrabajo-ar-20121106.tsv, the start data is 20121106
-			TSVToJSON(true, "20121106");    
-			//-------------------------use need to set parameter of TSVToJSON---------------------------------
 			
-			long end = System.currentTimeMillis();			
-			System.out.println("Parse TSV and generate JSON takes " + ((end - start) / 1000) + " seconds");	
+			TSVToJSON(true, "20121106");    
+			System.out.println("Parse TSV and generate JSON takes " + (System.currentTimeMillis() - start) + " ms");	
+			//-------------------------use need to set parameter of TSVToJSON---------------------------------
+				
 			
 			//-------------------------use need to set parameter of crawlFile---------------------------------
 			//crawl the created job entries, the parameter is to enable the identify the near duplicates.
-			crawlFile(true);
+			//crawlFile(true);
 			//-------------------------use need to set parameter of crawlFile---------------------------------
-			
 		} catch (Exception e){
 			e.printStackTrace();
 		}
 	}
 	
 	public void deleteFile(){
-		int count = 0;
+		int count = 1300000;
 		String prefix = this.jobEntryFile;
 		try{
 			while (true){
@@ -151,6 +154,6 @@ public class HW1 {
 		
 		endTime = System.currentTimeMillis();
 		System.out.println("Finish de-duplication");
-		System.out.println("De-Dulplication takes " + ((endTime - startTime) / 1000) + " seconds");
+		System.out.println("De-Dulplication takes " + (endTime - startTime) + " ms");
 	}
 }
